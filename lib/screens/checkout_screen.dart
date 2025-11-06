@@ -4,7 +4,6 @@ import 'package:razorpay_flutter/razorpay_flutter.dart';
 import '../models/cart_model.dart';
 import '../models/order_model.dart';
 import '../services/order_service.dart';
-import '../services/order_confirmation_service.dart';
 import '../controllers/cart_controller.dart';
 import 'main_navigation_screen.dart';
 
@@ -25,7 +24,6 @@ class CheckoutScreen extends StatefulWidget {
 class _CheckoutScreenState extends State<CheckoutScreen> {
   late Razorpay _razorpay;
   final OrderService _orderService = OrderService();
-  final OrderConfirmationService _orderConfirmationService = OrderConfirmationService();
   bool isProcessing = false;
   String selectedPaymentMethod = 'razorpay'; // Default payment method
 
@@ -89,13 +87,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       );
 
       await _orderService.saveOrder(order);
-      
-      // Save confirmation using new service
-      await _orderConfirmationService.placeOrder(
-        paymentMethod: paymentMethod,
-        totalAmount: widget.total,
-        items: cartItems,
-      );
 
       await Get.find<CartController>().clearCart();
 
@@ -121,99 +112,100 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20),
         ),
-        child: Padding(
-          padding: const EdgeInsets.all(32),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              // Animated checkmark
-              Container(
-                width: 100,
-                height: 100,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: const Color(0xFFD4AF37).withOpacity(0.15),
-                  border: Border.all(
-                    color: const Color(0xFFD4AF37),
-                    width: 3,
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(32),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // Animated checkmark
+                Container(
+                  width: 100,
+                  height: 100,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: const Color(0xFFD4AF37).withOpacity(0.15),
+                    border: Border.all(
+                      color: const Color(0xFFD4AF37),
+                      width: 3,
+                    ),
+                  ),
+                  child: const Icon(
+                    Icons.check_circle,
+                    color: Color(0xFFD4AF37),
+                    size: 60,
                   ),
                 ),
-                child: const Icon(
-                  Icons.check_circle,
-                  color: Color(0xFFD4AF37),
-                  size: 60,
+                const SizedBox(height: 24),
+                const Text(
+                  'Order Confirmed!',
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.w900,
+                    color: Color(0xFF1A1A1A),
+                    letterSpacing: 0.5,
+                  ),
                 ),
-              ),
-              const SizedBox(height: 24),
-              const Text(
-                'Order Confirmed!',
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.w900,
-                  color: Color(0xFF1A1A1A),
-                  letterSpacing: 0.5,
+                const SizedBox(height: 12),
+                Text(
+                  'Your order has been placed successfully\nvia $paymentMethod',
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    color: Colors.grey,
+                    fontSize: 14,
+                    height: 1.5,
+                  ),
                 ),
-              ),
-              const SizedBox(height: 12),
-              Text(
-                'Your order has been placed successfully\nvia $paymentMethod',
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  color: Colors.grey,
-                  fontSize: 14,
-                  height: 1.5,
-                ),
-              ),
-              const SizedBox(height: 28),
-              // Order details card
-              Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: Colors.grey[50],
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: Colors.grey[200]!),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Text(
-                          'Order Total:',
-                          style: TextStyle(
-                            color: Colors.grey,
-                            fontSize: 13,
+                const SizedBox(height: 28),
+                // Order details card
+                Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: Colors.grey[50],
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: Colors.grey[200]!),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Text(
+                            'Order Total:',
+                            style: TextStyle(
+                              color: Colors.grey,
+                              fontSize: 13,
+                            ),
                           ),
-                        ),
-                        Text(
-                          '₹${widget.total.toStringAsFixed(2)}',
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 14,
-                            color: Color(0xFFD4AF37),
+                          Text(
+                            '₹${widget.total.toStringAsFixed(2)}',
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 14,
+                              color: Color(0xFFD4AF37),
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 8),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Text(
-                          'Items:',
-                          style: TextStyle(
-                            color: Colors.grey,
-                            fontSize: 13,
+                        ],
+                      ),
+                      const SizedBox(height: 8),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Text(
+                            'Items:',
+                            style: TextStyle(
+                              color: Colors.grey,
+                              fontSize: 13,
+                            ),
                           ),
-                        ),
-                        Text(
-                          '${widget.cartItems.length} items',
-                          style: const TextStyle(
-                            fontWeight: FontWeight.w600,
-                            fontSize: 13,
+                          Text(
+                            '${widget.cartItems.length} items',
+                            style: const TextStyle(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 13,
+                            ),
                           ),
-                        ),
                       ],
                     ),
                     const SizedBox(height: 8),
@@ -227,12 +219,16 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                             fontSize: 13,
                           ),
                         ),
-                        Text(
-                          paymentMethod,
-                          style: const TextStyle(
-                            fontWeight: FontWeight.w600,
-                            fontSize: 13,
-                            color: Color(0xFF1A1A1A),
+                        Expanded(
+                          child: Text(
+                            paymentMethod,
+                            textAlign: TextAlign.right,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 13,
+                              color: Color(0xFF1A1A1A),
+                            ),
                           ),
                         ),
                       ],
@@ -290,19 +286,18 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                             fontSize: 13,
                           ),
                         ),
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
     );
-  }
-
-  void _startPayment() {
+  }  void _startPayment() {
     var options = {
       'key': 'rzp_test_1DP5mmOlF5G5ag', // Test key - replace with your actual key
       'amount': (widget.total * 100).toInt(), // Amount in paise

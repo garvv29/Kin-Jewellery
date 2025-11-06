@@ -5,8 +5,11 @@ import 'dart:io';
 import 'dart:convert';
 import '../controllers/auth_controller.dart';
 import '../models/user_profile_model.dart';
+import '../models/order_model.dart';
 import '../services/user_profile_service.dart';
+import '../services/order_service.dart';
 import '../screens/login_screen.dart';
+import '../screens/order_history_screen.dart';
 
 class ProfileScreenNew extends StatefulWidget {
   const ProfileScreenNew({Key? key}) : super(key: key);
@@ -17,15 +20,26 @@ class ProfileScreenNew extends StatefulWidget {
 
 class _ProfileScreenNewState extends State<ProfileScreenNew> {
   late UserProfileService userProfileService;
+  late OrderService orderService;
   late UserProfile userProfile;
   File? _selectedImage;
   bool isLoading = true;
+  List<Order> orderHistory = [];
 
   @override
   void initState() {
     super.initState();
     userProfileService = UserProfileService();
+    orderService = OrderService();
     _loadUserProfile();
+    _loadOrderHistory();
+  }
+
+  Future<void> _loadOrderHistory() async {
+    final orders = await orderService.getOrders();
+    setState(() {
+      orderHistory = orders;
+    });
   }
 
   Future<void> _loadUserProfile() async {
@@ -43,7 +57,10 @@ class _ProfileScreenNewState extends State<ProfileScreenNew> {
 
   Future<void> _pickProfileImage() async {
     final picker = ImagePicker();
-    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+    final pickedFile = await picker.pickImage(
+      source: ImageSource.gallery,
+      imageQuality: 80,
+    );
     
     if (pickedFile != null) {
       setState(() {
@@ -69,6 +86,115 @@ class _ProfileScreenNewState extends State<ProfileScreenNew> {
     }
   }
 
+  Future<void> _useGoogleProfilePicture() async {
+    final authController = Get.find<AuthController>();
+    final user = authController.currentUser.value;
+    
+    if (user != null && user.photoURL != null && user.photoURL!.isNotEmpty) {
+      // Store the Google photo URL directly
+      setState(() {
+        userProfile.profileImageUrl = user.photoURL!;
+      });
+      
+      await userProfileService.saveUserProfile(userProfile);
+      
+      Get.snackbar(
+        'Success',
+        'Google profile picture applied',
+        backgroundColor: const Color(0xFFD4AF37),
+        colorText: const Color(0xFF1A1A1A),
+      );
+    } else {
+      Get.snackbar(
+        'Error',
+        'No profile picture from Google account',
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+    }
+  }
+
+  void _showProfilePictureOptions(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (BuildContext context) {
+        return Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: Colors.grey[300],
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+              const SizedBox(height: 20),
+              const Text(
+                'Profile Picture Options',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFF1A1A1A),
+                ),
+              ),
+              const SizedBox(height: 24),
+              ListTile(
+                leading: const Icon(Icons.image, color: Color(0xFFD4AF37)),
+                title: const Text('Upload from Gallery'),
+                subtitle: const Text('Choose image or GIF'),
+                onTap: () {
+                  Navigator.pop(context);
+                  _pickProfileImage();
+                },
+              ),
+              const SizedBox(height: 12),
+              ListTile(
+                leading: const Icon(Icons.account_circle, color: Color(0xFFD4AF37)),
+                title: const Text('Use Google Profile Picture'),
+                subtitle: const Text('From your Google account'),
+                onTap: () {
+                  Navigator.pop(context);
+                  _useGoogleProfilePicture();
+                },
+              ),
+              const SizedBox(height: 12),
+              ListTile(
+                leading: const Icon(Icons.delete_outline, color: Colors.red),
+                title: const Text('Remove Profile Picture'),
+                onTap: () {
+                  Navigator.pop(context);
+                  _removeProfilePicture();
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> _removeProfilePicture() async {
+    setState(() {
+      _selectedImage = null;
+      userProfile.profileImageUrl = null;
+    });
+    
+    await userProfileService.saveUserProfile(userProfile);
+    
+    Get.snackbar(
+      'Success',
+      'Profile picture removed',
+      backgroundColor: const Color(0xFFD4AF37),
+      colorText: const Color(0xFF1A1A1A),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final authController = Get.find<AuthController>();
@@ -86,33 +212,24 @@ class _ProfileScreenNewState extends State<ProfileScreenNew> {
 
     return Scaffold(
       backgroundColor: const Color(0xFFFAFAFA),
+      appBar: AppBar(
+        elevation: 0,
+        backgroundColor: Colors.white,
+        title: const Text(
+          'KIN',
+          style: TextStyle(
+            fontSize: 28,
+            fontWeight: FontWeight.w900,
+            color: Color(0xFF1A1A1A),
+            letterSpacing: 3,
+          ),
+        ),
+        centerTitle: false,
+        automaticallyImplyLeading: false,
+      ),
       body: SingleChildScrollView(
         child: Column(
           children: [
-            // Header
-            Container(
-              color: Colors.white,
-              padding: const EdgeInsets.fromLTRB(16, 20, 16, 24),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'My Profile',
-                    style: TextStyle(
-                      fontSize: 28,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xFF1A1A1A),
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Container(
-                    height: 2,
-                    width: 40,
-                    color: const Color(0xFFD4AF37),
-                  ),
-                ],
-              ),
-            ),
             const SizedBox(height: 20),
 
             // Profile Picture Section
@@ -134,7 +251,7 @@ class _ProfileScreenNewState extends State<ProfileScreenNew> {
                   children: [
                     // Profile Picture
                     GestureDetector(
-                      onTap: _pickProfileImage,
+                      onTap: () => _showProfilePictureOptions(context),
                       child: Stack(
                         alignment: Alignment.center,
                         children: [
@@ -163,22 +280,29 @@ class _ProfileScreenNewState extends State<ProfileScreenNew> {
                                     radius: 60,
                                     backgroundImage: FileImage(_selectedImage!),
                                   )
-                                : userProfile.profileImageUrl != null && userProfile.profileImageUrl!.isNotEmpty
+                                : user != null && user.photoURL != null && user.photoURL!.isNotEmpty
                                     ? CircleAvatar(
                                         radius: 60,
-                                        backgroundImage: MemoryImage(
-                                          base64Decode(userProfile.profileImageUrl!),
+                                        backgroundImage: NetworkImage(
+                                          '${user.photoURL}?sz=500',
                                         ),
                                       )
-                                    : CircleAvatar(
-                                        radius: 60,
-                                        backgroundColor: Colors.grey[100],
-                                        child: const Icon(
-                                          Icons.person,
-                                          size: 50,
-                                          color: Color(0xFFD4AF37),
-                                        ),
-                                      ),
+                                    : userProfile.profileImageUrl != null && userProfile.profileImageUrl!.isNotEmpty
+                                        ? CircleAvatar(
+                                            radius: 60,
+                                            backgroundImage: MemoryImage(
+                                              base64Decode(userProfile.profileImageUrl!),
+                                            ),
+                                          )
+                                        : CircleAvatar(
+                                            radius: 60,
+                                            backgroundColor: Colors.grey[100],
+                                            child: const Icon(
+                                              Icons.person,
+                                              size: 50,
+                                              color: Color(0xFFD4AF37),
+                                            ),
+                                          ),
                           ),
                           Positioned(
                             bottom: 0,
@@ -195,7 +319,7 @@ class _ProfileScreenNewState extends State<ProfileScreenNew> {
                                 ],
                               ),
                               child: IconButton(
-                                onPressed: _pickProfileImage,
+                                onPressed: () => _showProfilePictureOptions(context),
                                 icon: const Icon(
                                   Icons.camera_alt,
                                   color: Color(0xFF1A1A1A),
@@ -274,7 +398,84 @@ class _ProfileScreenNewState extends State<ProfileScreenNew> {
                 ],
               ),
             ),
-            const SizedBox(height: 32),
+            const SizedBox(height: 40),
+
+            // Divider
+            Divider(color: Colors.grey[200], thickness: 1),
+            const SizedBox(height: 40),
+
+            // My Orders Navigation Card
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: GestureDetector(
+                onTap: () => Get.to(() => const OrderHistoryScreen()),
+                child: Container(
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    gradient: const LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [Color(0xFFD4AF37), Color(0xFFFBD89B)],
+                    ),
+                    borderRadius: BorderRadius.circular(16),
+                    boxShadow: [
+                      BoxShadow(
+                        color: const Color(0xFFD4AF37).withOpacity(0.3),
+                        blurRadius: 16,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.3),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: const Icon(
+                          Icons.shopping_bag_outlined,
+                          color: Color(0xFF1A1A1A),
+                          size: 28,
+                        ),
+                      ),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                              'My Orders',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w700,
+                                color: Color(0xFF1A1A1A),
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              'View all ${orderHistory.length} orders',
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: Color(0xFF1A1A1A).withOpacity(0.7),
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const Icon(
+                        Icons.arrow_forward_ios,
+                        color: Color(0xFF1A1A1A),
+                        size: 16,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 48),
 
             // Logout Button
             Padding(
@@ -353,6 +554,544 @@ class _ProfileScreenNewState extends State<ProfileScreenNew> {
         ),
       ),
     );
+  }
+
+  void _showOrderDetailsDialog(BuildContext context, Order order) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // Golden Header with Order ID
+                Container(
+                  padding: const EdgeInsets.all(20),
+                  decoration: const BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [Color(0xFFD4AF37), Color(0xFFC9A227)],
+                    ),
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(16),
+                      topRight: Radius.circular(16),
+                    ),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          const Icon(Icons.receipt_outlined, color: Color(0xFF1A1A1A), size: 24),
+                          const SizedBox(width: 12),
+                          const Expanded(
+                            child: Text(
+                              'Order Details',
+                              style: TextStyle(
+                                fontSize: 22,
+                                fontWeight: FontWeight.bold,
+                                color: Color(0xFF1A1A1A),
+                              ),
+                            ),
+                          ),
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                            decoration: BoxDecoration(
+                              color: Colors.white.withOpacity(0.3),
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: Text(
+                              order.status,
+                              style: TextStyle(
+                                fontSize: 11,
+                                fontWeight: FontWeight.bold,
+                                color: _getStatusColor(order.status),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 12),
+                      Text(
+                        'Order #${order.id}',
+                        style: const TextStyle(
+                          fontSize: 13,
+                          color: Color(0xFF1A1A1A),
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+                Padding(
+                  padding: const EdgeInsets.all(24),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Quick Stats Row (Date, Items, Time)
+                      Container(
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          color: Colors.grey[50],
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(color: Colors.grey[200]!),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Order Date',
+                                  style: TextStyle(
+                                    fontSize: 10,
+                                    color: Colors.grey[600],
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                                const SizedBox(height: 6),
+                                Text(
+                                  _formatDate(order.orderDate),
+                                  style: const TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.bold,
+                                    color: Color(0xFF1A1A1A),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Text(
+                                  'Total Items',
+                                  style: TextStyle(
+                                    fontSize: 10,
+                                    color: Colors.grey[600],
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                                const SizedBox(height: 6),
+                                Text(
+                                  '${order.items.length}',
+                                  style: const TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.bold,
+                                    color: Color(0xFF1A1A1A),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                Text(
+                                  'Order Time',
+                                  style: TextStyle(
+                                    fontSize: 10,
+                                    color: Colors.grey[600],
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                                const SizedBox(height: 6),
+                                Text(
+                                  _formatTime(order.orderDate),
+                                  style: const TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w600,
+                                    color: Color(0xFF1A1A1A),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 24),
+
+                      // Items Section
+                      Text(
+                        'Ordered Items (${order.items.length})',
+                        style: const TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFF1A1A1A),
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.grey[200]!),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: ListView.separated(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: order.items.length,
+                          separatorBuilder: (_, __) => Divider(color: Colors.grey[150], height: 1),
+                          itemBuilder: (context, index) {
+                            final item = order.items[index];
+                            final itemTotal = item['price'] * item['quantity'];
+                            return Padding(
+                              padding: const EdgeInsets.all(12),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          item['title'] ?? 'Product',
+                                          maxLines: 2,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: const TextStyle(
+                                            fontSize: 13,
+                                            fontWeight: FontWeight.w600,
+                                            color: Color(0xFF1A1A1A),
+                                          ),
+                                        ),
+                                        const SizedBox(height: 6),
+                                        Row(
+                                          children: [
+                                            Container(
+                                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                                              decoration: BoxDecoration(
+                                                color: Colors.grey[100],
+                                                borderRadius: BorderRadius.circular(4),
+                                              ),
+                                              child: Text(
+                                                'Qty: ${item['quantity']}',
+                                                style: TextStyle(
+                                                  fontSize: 11,
+                                                  color: Colors.grey[700],
+                                                  fontWeight: FontWeight.w500,
+                                                ),
+                                              ),
+                                            ),
+                                            const SizedBox(width: 8),
+                                            Text(
+                                              '₹${item['price'].toStringAsFixed(2)}/each',
+                                              style: TextStyle(
+                                                fontSize: 11,
+                                                color: Colors.grey[600],
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  const SizedBox(width: 12),
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                                    decoration: BoxDecoration(
+                                      color: const Color(0xFFD4AF37).withOpacity(0.1),
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    child: Text(
+                                      '₹${itemTotal.toStringAsFixed(2)}',
+                                      style: const TextStyle(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.bold,
+                                        color: Color(0xFFD4AF37),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                      const SizedBox(height: 24),
+
+                      // Delivery Address
+                      if (order.deliveryAddress != null && order.deliveryAddress!.isNotEmpty) ...[
+                        Container(
+                          padding: const EdgeInsets.all(14),
+                          decoration: BoxDecoration(
+                            color: Colors.blue.withOpacity(0.08),
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(color: Colors.blue.withOpacity(0.2)),
+                          ),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Icon(Icons.location_on, color: Colors.blue, size: 20),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'Delivery Address',
+                                      style: TextStyle(
+                                        fontSize: 10,
+                                        color: Colors.blue[700],
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 6),
+                                    Text(
+                                      order.deliveryAddress!,
+                                      style: const TextStyle(
+                                        fontSize: 12,
+                                        height: 1.6,
+                                        color: Color(0xFF1A1A1A),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                      ],
+
+                      // Payment & Delivery Row
+                      Row(
+                        children: [
+                          if (order.paymentMethod != null && order.paymentMethod!.isNotEmpty)
+                            Expanded(
+                              child: Container(
+                                padding: const EdgeInsets.all(12),
+                                decoration: BoxDecoration(
+                                  color: Colors.green.withOpacity(0.08),
+                                  borderRadius: BorderRadius.circular(10),
+                                  border: Border.all(color: Colors.green.withOpacity(0.2)),
+                                ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        Icon(Icons.payment, color: Colors.green[700], size: 16),
+                                        const SizedBox(width: 6),
+                                        Text(
+                                          'Payment',
+                                          style: TextStyle(
+                                            fontSize: 10,
+                                            color: Colors.green[700],
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 6),
+                                    Text(
+                                      order.paymentMethod!,
+                                      style: const TextStyle(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w600,
+                                        color: Color(0xFF1A1A1A),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          if (order.paymentMethod != null && order.paymentMethod!.isNotEmpty)
+                            const SizedBox(width: 12),
+                          if (order.estimatedDelivery != null)
+                            Expanded(
+                              child: Container(
+                                padding: const EdgeInsets.all(12),
+                                decoration: BoxDecoration(
+                                  color: Colors.purple.withOpacity(0.08),
+                                  borderRadius: BorderRadius.circular(10),
+                                  border: Border.all(color: Colors.purple.withOpacity(0.2)),
+                                ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        Icon(Icons.calendar_today, color: Colors.purple[700], size: 16),
+                                        const SizedBox(width: 6),
+                                        Text(
+                                          'Est. Delivery',
+                                          style: TextStyle(
+                                            fontSize: 10,
+                                            color: Colors.purple[700],
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 6),
+                                    Text(
+                                      order.estimatedDelivery != null 
+                                        ? _formatDate(order.estimatedDelivery!)
+                                        : 'Not specified',
+                                      style: const TextStyle(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w600,
+                                        color: Color(0xFF1A1A1A),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                        ],
+                      ),
+                      const SizedBox(height: 12),
+
+                      // Tracking ID
+                      if (order.trackingId != null && order.trackingId!.isNotEmpty)
+                        Container(
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            color: Colors.orange.withOpacity(0.08),
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(color: Colors.orange.withOpacity(0.2)),
+                          ),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Icon(Icons.local_shipping, color: Colors.orange[700], size: 16),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'Tracking ID',
+                                      style: TextStyle(
+                                        fontSize: 10,
+                                        color: Colors.orange[700],
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 4),
+                                    Text(
+                                      order.trackingId!,
+                                      style: const TextStyle(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w600,
+                                        color: Color(0xFF1A1A1A),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      const SizedBox(height: 24),
+
+                      // Total Amount
+                      Container(
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: [
+                              const Color(0xFFD4AF37).withOpacity(0.15),
+                              const Color(0xFFD4AF37).withOpacity(0.05),
+                            ],
+                          ),
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(color: const Color(0xFFD4AF37).withOpacity(0.3)),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Text(
+                              'Total Order Amount',
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                                color: Color(0xFF1A1A1A),
+                              ),
+                            ),
+                            Text(
+                              '₹${order.totalAmount.toStringAsFixed(2)}',
+                              style: const TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: Color(0xFFD4AF37),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+
+                      // Close Button
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          onPressed: () => Navigator.pop(context),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFFD4AF37),
+                            foregroundColor: const Color(0xFF1A1A1A),
+                            padding: const EdgeInsets.symmetric(vertical: 12),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
+                          child: const Text('Close Details'),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  String _formatDate(DateTime dateTime) {
+    try {
+      final year = dateTime.year;
+      final month = dateTime.month.toString().padLeft(2, '0');
+      final day = dateTime.day.toString().padLeft(2, '0');
+      return '$year-$month-$day';
+    } catch (e) {
+      return '--/--/--';
+    }
+  }
+
+  String _formatTime(DateTime dateTime) {
+    try {
+      final hour = dateTime.hour.toString().padLeft(2, '0');
+      final minute = dateTime.minute.toString().padLeft(2, '0');
+      final second = dateTime.second.toString().padLeft(2, '0');
+      return '$hour:$minute:$second';
+    } catch (e) {
+      return '--:--:--';
+    }
+  }
+
+  Color _getStatusColor(String status) {
+    switch (status) {
+      case 'Pending':
+        return Colors.orange;
+      case 'Confirmed':
+        return Colors.blue;
+      case 'Shipped':
+        return Colors.purple;
+      case 'Delivered':
+        return Colors.green;
+      case 'Cancelled':
+        return Colors.red;
+      default:
+        return Colors.grey;
+    }
   }
 
   Widget _buildLogoutCard(BuildContext context) {

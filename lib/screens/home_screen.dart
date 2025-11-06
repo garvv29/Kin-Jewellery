@@ -384,14 +384,6 @@ class _HomeScreenState extends State<HomeScreen> {
                                     color: Color(0xFF1A1A1A),
                                   ),
                                 ),
-                                SizedBox(height: 4),
-                                Text(
-                                  'Quarterly Performance',
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    color: Colors.grey,
-                                  ),
-                                ),
                               ],
                             ),
                             Container(
@@ -457,6 +449,11 @@ class _HomeScreenState extends State<HomeScreen> {
                                           return const Text('');
                                         }
                                         final title = salesData.keys.elementAt(index);
+                                        // Abbreviate long titles for chart display
+                                        String displayTitle = title;
+                                        if (title.length > 12) {
+                                          displayTitle = title.substring(0, 12);
+                                        }
                                         return SideTitleWidget(
                                           axisSide: meta.axisSide,
                                           child: Padding(
@@ -464,13 +461,13 @@ class _HomeScreenState extends State<HomeScreen> {
                                             child: Transform.rotate(
                                               angle: -0.5, // Rotate 45 degrees (approx -0.5 radians)
                                               child: Text(
-                                                title,
+                                                displayTitle,
                                                 style: const TextStyle(
-                                                  fontSize: 11,
+                                                  fontSize: 10,
                                                   color: Color(0xFF1A1A1A),
                                                   fontWeight: FontWeight.w600,
                                                 ),
-                                                maxLines: 2,
+                                                maxLines: 1,
                                                 textAlign: TextAlign.center,
                                                 overflow: TextOverflow.ellipsis,
                                               ),

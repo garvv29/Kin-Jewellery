@@ -16,9 +16,19 @@ class LoginScreen extends StatelessWidget {
         backgroundColor: Colors.white,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Color(0xFF2C2C2C)),
+          icon: const Icon(Icons.arrow_back, color: Color(0xFF1A1A1A)),
           onPressed: () => Get.back(),
         ),
+        title: const Text(
+          'KIN',
+          style: TextStyle(
+            fontSize: 28,
+            fontWeight: FontWeight.w900,
+            color: Color(0xFF1A1A1A),
+            letterSpacing: 3,
+          ),
+        ),
+        centerTitle: false,
       ),
       body: SafeArea(
         child: Padding(
