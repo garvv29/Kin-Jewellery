@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- Golden Diamond/Jewel Shape -->
+    <!-- Top point -->
+    <path
+        android:fillColor="#D4AF37"
+        android:pathData="M54,15 L62,30 L46,30 Z" />
+
+    <!-- Upper middle -->
+    <path
+        android:fillColor="#E8C547"
+        android:pathData="M62,30 L75,45 L33,45 L46,30 Z" />
+
+    <!-- Middle -->
+    <path
+        android:fillColor="#D4AF37"
+        android:pathData="M75,45 L85,60 L23,60 L33,45 Z" />
+
+    <!-- Lower middle -->
+    <path
+        android:fillColor="#C9A227"
+        android:pathData="M85,60 L75,75 L33,75 L23,60 Z" />
+
+    <!-- Bottom section -->
+    <path
+        android:fillColor="#D4AF37"
+        android:pathData="M75,75 L62,90 L46,90 L33,75 Z" />
+
+    <!-- Subtle highlight on top -->
+    <path
+        android:fillColor="#FBDB9B"
+        android:pathData="M50,18 L56,25 L48,25 Z"
+        android:alpha="0.7" />
+
+</vector>

@@ -1,0 +1,56 @@
+name: kin
+description: "A jewellery ordering application with Google Sign-In, cart functionality, and payment integration."
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # State Management
+  get: ^4.6.6
+  
+  # Firebase
+  firebase_core: ^2.24.0
+  firebase_auth: ^4.14.0
+  google_sign_in: '>=6.1.0 <7.0.0'
+  
+  # HTTP & API
+  http: ^1.1.0
+  
+  # Charts
+  fl_chart: ^0.64.0
+  
+  # Storage
+  shared_preferences: ^2.2.2
+  
+  # UI & Icons
+  cupertino_icons: ^1.0.2
+  font_awesome_flutter: ^10.7.0
+  
+  # Payment Integration
+  razorpay_flutter: ^1.3.3
+  
+  # Image & File Handling
+  image_picker: ^1.0.4
+  
+  # Utilities
+  intl: ^0.19.0
+  dio: ^5.3.1
+  connectivity_plus: ^5.0.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^3.0.0
+
+flutter:
+  uses-material-design: true
+  
+  assets:
+    - assets/images/
