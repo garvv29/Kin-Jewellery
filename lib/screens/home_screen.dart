@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../controllers/product_controller.dart';
 import '../controllers/cart_controller.dart';
 import '../controllers/auth_controller.dart';
@@ -70,12 +71,12 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         elevation: 0,
         backgroundColor: Colors.white,
-        title: const Text(
-          'KIN',
-          style: TextStyle(
+        title: Text(
+          'Kin',
+          style: GoogleFonts.bodoniModa(
             fontSize: 28,
-            fontWeight: FontWeight.w900,
-            color: Color(0xFF1A1A1A),
+            fontWeight: FontWeight.w500,
+            color: const Color(0xFF1A1A1A),
             letterSpacing: 3,
           ),
         ),
@@ -200,6 +201,244 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 const SizedBox(height: 24),
 
+                // Premium Promotional Banner
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Container(
+                    height: 200,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(24),
+                      border: Border.all(
+                        color: const Color(0xFFD4AF37),
+                        width: 2,
+                      ),
+                      gradient: LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [
+                          const Color(0xFF1A1A1A),
+                          const Color(0xFF2D2D2D),
+                        ],
+                      ),
+                      boxShadow: [],
+                    ),
+                    child: Stack(
+                      children: [
+                        // Background overlay
+                        Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(22),
+                            gradient: LinearGradient(
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                              colors: [
+                                Colors.black.withOpacity(0.3),
+                                Colors.transparent,
+                              ],
+                            ),
+                          ),
+                        ),
+                        // Left Content
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 24,
+                            vertical: 20,
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              // Top: Discount and Date
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    children: [
+                                      Text(
+                                        'Up to ',
+                                        style: GoogleFonts.bodoniModa(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.w400,
+                                          color: Colors.white,
+                                          letterSpacing: 1,
+                                        ),
+                                      ),
+                                      Container(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 10,
+                                          vertical: 4,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          gradient: LinearGradient(
+                                            colors: [
+                                              const Color(0xFFD4AF37),
+                                              const Color(0xFFFBD89B),
+                                            ],
+                                          ),
+                                          borderRadius: BorderRadius.circular(8),
+                                        ),
+                                        child: Text(
+                                          '40% Off',
+                                          style: GoogleFonts.bodoniModa(
+                                            fontSize: 28,
+                                            fontWeight: FontWeight.w700,
+                                            color: const Color(0xFF1A1A1A),
+                                            letterSpacing: 1,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 12),
+                                  Text(
+                                    'Oct 28 - Nov 28',
+                                    style: GoogleFonts.bodoniModa(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w300,
+                                      color: const Color(0xFFD4AF37),
+                                      letterSpacing: 1.5,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              // Bottom: Offer Text and Button
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Get Special Offer',
+                                    style: GoogleFonts.bodoniModa(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w400,
+                                      color: Colors.white,
+                                      letterSpacing: 0.5,
+                                      fontStyle: FontStyle.italic,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 10),
+                                  GestureDetector(
+                                    onTap: () {
+                                      Get.snackbar(
+                                        'Special Offer',
+                                        'Exclusive deals loading...',
+                                        backgroundColor: const Color(0xFFD4AF37),
+                                        colorText: const Color(0xFF1A1A1A),
+                                        snackPosition: SnackPosition.BOTTOM,
+                                      );
+                                    },
+                                    child: Container(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 20,
+                                        vertical: 10,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        gradient: LinearGradient(
+                                          colors: [
+                                            const Color(0xFFD4AF37),
+                                            const Color(0xFFFBD89B),
+                                          ],
+                                        ),
+                                        borderRadius: BorderRadius.circular(12),
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: const Color(0xFFD4AF37).withOpacity(0.4),
+                                            blurRadius: 12,
+                                            spreadRadius: 1,
+                                          ),
+                                        ],
+                                      ),
+                                      child: Text(
+                                        'Shop Now',
+                                        style: GoogleFonts.bodoniModa(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w600,
+                                          color: const Color(0xFF1A1A1A),
+                                          letterSpacing: 1,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                        // Right: Premium Image Placeholder
+                        Positioned(
+                          right: 0,
+                          top: 0,
+                          bottom: 0,
+                          child: ClipRRect(
+                            borderRadius: const BorderRadius.only(
+                              topRight: Radius.circular(22),
+                              bottomRight: Radius.circular(22),
+                            ),
+                            child: Container(
+                              width: 160,
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                  colors: [
+                                    const Color(0xFFD4AF37).withOpacity(0.2),
+                                    const Color(0xFF1A1A1A).withOpacity(0.5),
+                                  ],
+                                ),
+                              ),
+                              child: Stack(
+                                alignment: Alignment.center,
+                                children: [
+                                  // Decorative pattern
+                                  Positioned(
+                                    top: -20,
+                                    right: -20,
+                                    child: Container(
+                                      width: 120,
+                                      height: 120,
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        gradient: RadialGradient(
+                                          colors: [
+                                            const Color(0xFFD4AF37).withOpacity(0.15),
+                                            Colors.transparent,
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  // Placeholder for image - you can replace with actual image
+                                  Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(
+                                        Icons.diamond,
+                                        size: 48,
+                                        color: const Color(0xFFD4AF37).withOpacity(0.8),
+                                      ),
+                                      const SizedBox(height: 8),
+                                      Text(
+                                        'Premium\nCollection',
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          fontSize: 11,
+                                          color: Colors.white.withOpacity(0.6),
+                                          fontWeight: FontWeight.w500,
+                                          letterSpacing: 0.5,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 24),
+
                 // Featured Collections (Horizontal Scroll)
                 if (productController.products.isNotEmpty)
                   Column(
@@ -210,12 +449,12 @@ class _HomeScreenState extends State<HomeScreen> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Text(
+                            Text(
                               'Featured Collections',
-                              style: TextStyle(
+                              style: GoogleFonts.bodoniModa(
                                 fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                                color: Color(0xFF1A1A1A),
+                                fontWeight: FontWeight.w600,
+                                color: const Color(0xFF1A1A1A),
                               ),
                             ),
                             const SizedBox(height: 8),
@@ -285,12 +524,12 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
+                      Text(
                         'All Products',
-                        style: TextStyle(
+                        style: GoogleFonts.bodoniModa(
                           fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xFF1A1A1A),
+                          fontWeight: FontWeight.w600,
+                          color: const Color(0xFF1A1A1A),
                         ),
                       ),
                       const SizedBox(height: 8),
@@ -356,197 +595,349 @@ class _HomeScreenState extends State<HomeScreen> {
                 Padding(
                   padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
                   child: Container(
-                    padding: const EdgeInsets.all(20),
+                    padding: const EdgeInsets.all(24),
                     decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(16),
+                      gradient: LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [
+                          Colors.white,
+                          const Color(0xFFFAFAFA),
+                        ],
+                      ),
+                      borderRadius: BorderRadius.circular(20),
                       boxShadow: [
                         BoxShadow(
                           color: Colors.black.withOpacity(0.05),
                           blurRadius: 16,
                         ),
                       ],
+                      border: Border.all(
+                        color: const Color(0xFFD4AF37).withOpacity(0.2),
+                        width: 1,
+                      ),
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        // Header
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            const Column(
+                            Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(
-                                  'Sales Analytics',
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
-                                    color: Color(0xFF1A1A1A),
-                                  ),
+                                Row(
+                                  children: [
+                                    Container(
+                                      width: 4,
+                                      height: 24,
+                                      decoration: BoxDecoration(
+                                        color: const Color(0xFFD4AF37),
+                                        borderRadius: BorderRadius.circular(2),
+                                      ),
+                                    ),
+                                    const SizedBox(width: 12),
+                                    Text(
+                                      'Sales Analytics',
+                                      style: GoogleFonts.bodoniModa(
+                                        fontSize: 22,
+                                        fontWeight: FontWeight.w600,
+                                        color: const Color(0xFF1A1A1A),
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ],
                             ),
                             Container(
                               padding: const EdgeInsets.symmetric(
-                                horizontal: 12,
-                                vertical: 6,
+                                horizontal: 14,
+                                vertical: 7,
                               ),
                               decoration: BoxDecoration(
-                                color: const Color(0xFFD4AF37).withOpacity(0.1),
+                                color: const Color(0xFFD4AF37).withOpacity(0.15),
                                 borderRadius: BorderRadius.circular(20),
-                              ),
-                              child: const Text(
-                                'Live',
-                                style: TextStyle(
-                                  color: Color(0xFFD4AF37),
-                                  fontSize: 11,
-                                  fontWeight: FontWeight.bold,
+                                border: Border.all(
+                                  color: const Color(0xFFD4AF37).withOpacity(0.3),
                                 ),
+                              ),
+                              child: const Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(
+                                    Icons.circle,
+                                    size: 8,
+                                    color: Color(0xFFD4AF37),
+                                  ),
+                                  SizedBox(width: 6),
+                                  Text(
+                                    'Live',
+                                    style: TextStyle(
+                                      color: Color(0xFFD4AF37),
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
                           ],
                         ),
-                        const SizedBox(height: 20),
+                        const SizedBox(height: 28),
+                        
+                        // Charts Container
                         if (salesData.isEmpty)
                           Container(
-                            height: 220,
+                            height: 280,
                             decoration: BoxDecoration(
                               color: Colors.grey[50],
-                              borderRadius: BorderRadius.circular(8),
+                              borderRadius: BorderRadius.circular(12),
                             ),
                             child: const Center(
-                              child: Text('Loading chart...'),
+                              child: Text('Loading analytics...'),
                             ),
                           )
                         else
-                          SizedBox(
-                            height: 320,
-                            child: BarChart(
-                              BarChartData(
-                                alignment: BarChartAlignment.spaceEvenly,
-                                maxY: (salesData.values.isEmpty
-                                        ? 10
-                                        : (salesData.values.reduce((a, b) => a > b ? a : b) > 0
-                                            ? salesData.values.reduce((a, b) => a > b ? a : b) * 1.4
-                                            : 10))
-                                    .toDouble(),
-                                barTouchData: BarTouchData(
-                                  enabled: true,
-                                  touchTooltipData: BarTouchTooltipData(
-                                    tooltipBgColor: Colors.black.withOpacity(0.8),
-                                    tooltipRoundedRadius: 12,
-                                    tooltipMargin: 8,
-                                  ),
-                                ),
-                                titlesData: FlTitlesData(
-                                  show: true,
-                                  bottomTitles: AxisTitles(
-                                    sideTitles: SideTitles(
-                                      showTitles: true,
-                                      getTitlesWidget: (value, meta) {
-                                        final index = value.toInt();
-                                        if (index < 0 || index >= salesData.keys.length) {
-                                          return const Text('');
-                                        }
-                                        final title = salesData.keys.elementAt(index);
-                                        // Abbreviate long titles for chart display
-                                        String displayTitle = title;
-                                        if (title.length > 12) {
-                                          displayTitle = title.substring(0, 12);
-                                        }
-                                        return SideTitleWidget(
-                                          axisSide: meta.axisSide,
-                                          child: Padding(
-                                            padding: const EdgeInsets.only(top: 12),
-                                            child: Transform.rotate(
-                                              angle: -0.5, // Rotate 45 degrees (approx -0.5 radians)
-                                              child: Text(
-                                                displayTitle,
+                          SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Row(
+                              children: [
+                                // Bar Chart
+                                SizedBox(
+                                  width: 320,
+                                  height: 320,
+                                  child: BarChart(
+                                    BarChartData(
+                                      alignment: BarChartAlignment.spaceEvenly,
+                                      maxY: (salesData.values.isEmpty
+                                              ? 10
+                                              : (salesData.values.reduce((a, b) => a > b ? a : b) > 0
+                                                  ? salesData.values.reduce((a, b) => a > b ? a : b) * 1.4
+                                                  : 10))
+                                          .toDouble(),
+                                      barTouchData: BarTouchData(
+                                        enabled: true,
+                                        touchTooltipData: BarTouchTooltipData(
+                                          tooltipBgColor: const Color(0xFF1A1A1A),
+                                          tooltipRoundedRadius: 12,
+                                          tooltipMargin: 8,
+                                          tooltipBorder: BorderSide(
+                                            color: const Color(0xFFD4AF37),
+                                            width: 1,
+                                          ),
+                                        ),
+                                      ),
+                                      titlesData: FlTitlesData(
+                                        show: true,
+                                        bottomTitles: AxisTitles(
+                                          sideTitles: SideTitles(
+                                            showTitles: true,
+                                            getTitlesWidget: (value, meta) {
+                                              final index = value.toInt();
+                                              if (index < 0 || index >= salesData.keys.length) {
+                                                return const Text('');
+                                              }
+                                              final title = salesData.keys.elementAt(index);
+                                              String displayTitle = title.length > 8 
+                                                  ? title.substring(0, 8) 
+                                                  : title;
+                                              return SideTitleWidget(
+                                                axisSide: meta.axisSide,
+                                                child: Padding(
+                                                  padding: const EdgeInsets.only(top: 12),
+                                                  child: Text(
+                                                    displayTitle,
+                                                    style: const TextStyle(
+                                                      fontSize: 11,
+                                                      color: Color(0xFF666666),
+                                                      fontWeight: FontWeight.w600,
+                                                    ),
+                                                    textAlign: TextAlign.center,
+                                                  ),
+                                                ),
+                                              );
+                                            },
+                                            reservedSize: 50,
+                                          ),
+                                        ),
+                                        leftTitles: AxisTitles(
+                                          sideTitles: SideTitles(
+                                            showTitles: true,
+                                            reservedSize: 40,
+                                            getTitlesWidget: (value, meta) {
+                                              return Text(
+                                                '${value.toInt()}',
                                                 style: const TextStyle(
                                                   fontSize: 10,
-                                                  color: Color(0xFF1A1A1A),
-                                                  fontWeight: FontWeight.w600,
+                                                  color: Color(0xFFB0B0B0),
+                                                  fontWeight: FontWeight.w500,
                                                 ),
-                                                maxLines: 1,
-                                                textAlign: TextAlign.center,
-                                                overflow: TextOverflow.ellipsis,
+                                              );
+                                            },
+                                          ),
+                                        ),
+                                        topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                                        rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                                      ),
+                                      gridData: FlGridData(
+                                        show: true,
+                                        drawHorizontalLine: true,
+                                        horizontalInterval: 1,
+                                        getDrawingHorizontalLine: (value) {
+                                          return FlLine(
+                                            color: const Color(0xFFD4AF37).withOpacity(0.08),
+                                            strokeWidth: 1,
+                                          );
+                                        },
+                                        drawVerticalLine: false,
+                                      ),
+                                      borderData: FlBorderData(show: false),
+                                      barGroups: List.generate(
+                                        salesData.length,
+                                        (index) => BarChartGroupData(
+                                          x: index,
+                                          barRods: [
+                                            BarChartRodData(
+                                              toY: salesData.values
+                                                  .elementAt(index)
+                                                  .toDouble(),
+                                              color: const Color(0xFFD4AF37),
+                                              width: 18,
+                                              borderRadius: const BorderRadius.all(
+                                                Radius.circular(8),
+                                              ),
+                                              backDrawRodData: BackgroundBarChartRodData(
+                                                show: true,
+                                                toY: (salesData.values.isEmpty
+                                                        ? 10
+                                                        : (salesData.values.reduce(
+                                                                (a, b) => a > b ? a : b) >
+                                                            0
+                                                        ? salesData.values.reduce(
+                                                                (a, b) => a > b ? a : b) *
+                                                            1.3
+                                                        : 10))
+                                                    .toDouble(),
+                                                color: const Color(0xFFD4AF37).withOpacity(0.08),
                                               ),
                                             ),
-                                          ),
-                                        );
-                                      },
-                                      reservedSize: 70, // Increased from 45 to give more space
+                                          ],
+                                        ),
+                                      ),
                                     ),
                                   ),
-                                  leftTitles: AxisTitles(
-                                    sideTitles: SideTitles(
-                                      showTitles: true,
-                                      reservedSize: 45,
-                                      getTitlesWidget: (value, meta) {
-                                        return Text(
-                                          '${value.toInt()}',
+                                ),
+                                const SizedBox(width: 24),
+                                
+                                // Pie Chart
+                                SizedBox(
+                                  width: 280,
+                                  height: 280,
+                                  child: PieChart(
+                                    PieChartData(
+                                      sections: List.generate(
+                                        salesData.length,
+                                        (index) {
+                                          final total = salesData.values.reduce((a, b) => a + b);
+                                          final value = salesData.values.elementAt(index).toDouble();
+                                          final percentage = (value / (total > 0 ? total : 1)) * 100;
+                                          
+                                          final colors = [
+                                            const Color(0xFFD4AF37),
+                                            const Color(0xFFFBD89B),
+                                            const Color(0xFFC9A227),
+                                            const Color(0xFFE6C954),
+                                            const Color(0xFFB8922A),
+                                          ];
+                                          
+                                          return PieChartSectionData(
+                                            color: colors[index % colors.length],
+                                            value: value,
+                                            title: '${percentage.toStringAsFixed(1)}%',
+                                            radius: 60,
+                                            titleStyle: const TextStyle(
+                                              fontSize: 11,
+                                              fontWeight: FontWeight.w600,
+                                              color: Color(0xFF1A1A1A),
+                                            ),
+                                            badgeWidget: null,
+                                          );
+                                        },
+                                      ),
+                                      sectionsSpace: 3,
+                                      centerSpaceRadius: 40,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        
+                        const SizedBox(height: 20),
+                        
+                        // Legend
+                        Container(
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFD4AF37).withOpacity(0.05),
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(
+                              color: const Color(0xFFD4AF37).withOpacity(0.1),
+                            ),
+                          ),
+                          child: Column(
+                            children: List.generate(
+                              salesData.length,
+                              (index) {
+                                final title = salesData.keys.elementAt(index);
+                                final value = salesData.values.elementAt(index);
+                                final colors = [
+                                  const Color(0xFFD4AF37),
+                                  const Color(0xFFFBD89B),
+                                  const Color(0xFFC9A227),
+                                  const Color(0xFFE6C954),
+                                  const Color(0xFFB8922A),
+                                ];
+                                
+                                return Padding(
+                                  padding: const EdgeInsets.symmetric(vertical: 6),
+                                  child: Row(
+                                    children: [
+                                      Container(
+                                        width: 10,
+                                        height: 10,
+                                        decoration: BoxDecoration(
+                                          color: colors[index % colors.length],
+                                          borderRadius: BorderRadius.circular(2),
+                                        ),
+                                      ),
+                                      const SizedBox(width: 10),
+                                      Expanded(
+                                        child: Text(
+                                          title,
                                           style: const TextStyle(
-                                            fontSize: 11,
-                                            color: Colors.grey,
+                                            fontSize: 13,
+                                            color: Color(0xFF666666),
                                             fontWeight: FontWeight.w500,
                                           ),
-                                        );
-                                      },
-                                    ),
-                                  ),
-                                  topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                                  rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                                ),
-                                gridData: FlGridData(
-                                  show: true,
-                                  drawHorizontalLine: true,
-                                  horizontalInterval: 1,
-                                  getDrawingHorizontalLine: (value) {
-                                    return FlLine(
-                                      color: Colors.grey.withOpacity(0.15),
-                                      strokeWidth: 1,
-                                    );
-                                  },
-                                  drawVerticalLine: false,
-                                ),
-                                borderData: FlBorderData(
-                                  show: false,
-                                ),
-                                barGroups: List.generate(
-                                  salesData.length,
-                                  (index) => BarChartGroupData(
-                                    x: index,
-                                    barRods: [
-                                      BarChartRodData(
-                                        toY: salesData.values
-                                            .elementAt(index)
-                                            .toDouble(),
-                                        color: const Color(0xFFD4AF37),
-                                        width: 20,
-                                        borderRadius: const BorderRadius.all(
-                                          Radius.circular(10),
                                         ),
-                                        backDrawRodData: BackgroundBarChartRodData(
-                                          show: true,
-                                          toY: (salesData.values.isEmpty
-                                                  ? 10
-                                                  : (salesData.values
-                                                          .reduce((a, b) => a > b ? a : b) >
-                                                      0
-                                                  ? salesData.values.reduce(
-                                                          (a, b) => a > b ? a : b) *
-                                                      1.3
-                                                  : 10))
-                                              .toDouble(),
-                                          color: Colors.grey[100],
+                                      ),
+                                      Text(
+                                        '$value units',
+                                        style: const TextStyle(
+                                          fontSize: 13,
+                                          color: Color(0xFFD4AF37),
+                                          fontWeight: FontWeight.w600,
                                         ),
                                       ),
                                     ],
                                   ),
-                                ),
-                              ),
+                                );
+                              },
                             ),
                           ),
+                        ),
                       ],
                     ),
                   ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../models/order_model.dart';
 import '../services/order_service.dart';
 
@@ -582,12 +583,12 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
           icon: const Icon(Icons.arrow_back, color: Color(0xFF1A1A1A)),
           onPressed: () => Get.back(),
         ),
-        title: const Text(
-          'KIN',
-          style: TextStyle(
+        title: Text(
+          'Kin',
+          style: GoogleFonts.bodoniModa(
             fontSize: 28,
-            fontWeight: FontWeight.w900,
-            color: Color(0xFF1A1A1A),
+            fontWeight: FontWeight.w500,
+            color: const Color(0xFF1A1A1A),
             letterSpacing: 3,
           ),
         ),

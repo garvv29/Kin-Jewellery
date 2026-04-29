@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'dart:io';
 import 'dart:convert';
 import '../controllers/auth_controller.dart';
@@ -1250,7 +1251,11 @@ class _ProfileScreenNewState extends State<ProfileScreenNew> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Text('My Addresses', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                  Text('My Addresses', style: GoogleFonts.bodoniModa(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w600,
+                    color: const Color(0xFF1A1A1A),
+                  )),
                   const SizedBox(height: 20),
                   if (userProfile.addresses.isEmpty)
                     const Padding(
@@ -1351,7 +1356,11 @@ class _ProfileScreenNewState extends State<ProfileScreenNew> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Text('Add Delivery Address', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                  Text('Add Delivery Address', style: GoogleFonts.bodoniModa(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w600,
+                    color: const Color(0xFF1A1A1A),
+                  )),
                   const SizedBox(height: 20),
                   _buildTextField('Label (Home, Office, etc)', labelController),
                   const SizedBox(height: 12),
@@ -1438,7 +1447,11 @@ class _ProfileScreenNewState extends State<ProfileScreenNew> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Text('My Payment Methods', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                  Text('My Payment Methods', style: GoogleFonts.bodoniModa(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w600,
+                    color: const Color(0xFF1A1A1A),
+                  )),
                   const SizedBox(height: 20),
                   if (userProfile.paymentMethods.isEmpty)
                     const Padding(
@@ -1539,7 +1552,11 @@ class _ProfileScreenNewState extends State<ProfileScreenNew> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Text('Add Payment Card', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                  Text('Add Payment Card', style: GoogleFonts.bodoniModa(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w600,
+                    color: const Color(0xFF1A1A1A),
+                  )),
                   const SizedBox(height: 20),
                   _buildTextField('Card Label', labelController),
                   const SizedBox(height: 12),
@@ -1640,7 +1657,11 @@ class _ProfileScreenNewState extends State<ProfileScreenNew> {
                   child: const Icon(Icons.logout, color: Colors.red, size: 32),
                 ),
                 const SizedBox(height: 16),
-                const Text('Logout', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Color(0xFF1A1A1A))),
+                Text('Logout', style: GoogleFonts.bodoniModa(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w600,
+                  color: const Color(0xFF1A1A1A),
+                )),
                 const SizedBox(height: 12),
                 const Text('Are you sure you want to logout?', textAlign: TextAlign.center, style: TextStyle(fontSize: 14, color: Colors.grey)),
                 const SizedBox(height: 24),

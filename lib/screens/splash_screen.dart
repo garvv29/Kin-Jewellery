@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'main_navigation_screen.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -80,26 +81,57 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
             ],
           ),
         ),
-        child: SafeArea(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              // Premium decorative line
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 80),
-                child: Container(
-                  height: 2,
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [
-                        Colors.transparent,
-                        const Color(0xFFD4AF37),
-                        Colors.transparent,
-                      ],
-                    ),
+        child: Stack(
+          children: [
+            // Ring image background - right side with low opacity
+            Positioned(
+              right: -40,
+              top: -30,
+              bottom: -30,
+              child: Opacity(
+                opacity: 0.12,
+                child: Transform.scale(
+                  scale: 1.2,
+                  child: Image.asset(
+                    '/ring.png',
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) {
+                      return Container(
+                        color: const Color(0xFFD4AF37).withOpacity(0.1),
+                        child: const Center(
+                          child: Icon(
+                            Icons.diamond,
+                            size: 100,
+                            color: Color(0xFFD4AF37),
+                          ),
+                        ),
+                      );
+                    },
                   ),
                 ),
               ),
+            ),
+            // Main content
+            SafeArea(
+              child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              // Premium decorative line
+              // Padding(
+              //   padding: const EdgeInsets.symmetric(horizontal: 80),
+              //   child: Container(
+              //     height: 2,
+              //     decoration: BoxDecoration(
+              //       gradient: LinearGradient(
+              //         colors: [
+              //           Colors.transparent,
+              //           const Color(0xFFD4AF37),
+              //           Colors.transparent,
+              //         ],
+              //       ),
+              //     ),
+              //   ),
+              // ),
               const SizedBox(height: 40),
 
               // Animated Jewellery Icon
@@ -123,7 +155,7 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
                       BoxShadow(
                         color: const Color(0xFFD4AF37).withOpacity(0.5),
                         blurRadius: 40,
-                        spreadRadius: 8,
+                        spreadRadius: 5,
                       ),
                       BoxShadow(
                         color: const Color(0xFFD4AF37).withOpacity(0.2),
@@ -147,12 +179,12 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
                 child: Column(
                   children: [
                     // App Logo/Name with premium styling
-                    const Text(
+                    Text(
                       'Kin',
-                      style: TextStyle(
+                      style: GoogleFonts.bodoniModa(
                         fontSize: 72,
                         fontWeight: FontWeight.w300,
-                        color: Color(0xFF1A1A1A),
+                        color: const Color(0xFF1A1A1A),
                         letterSpacing: 8,
                       ),
                     ),
@@ -200,33 +232,33 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
                       ),
                     ),
                     const SizedBox(height: 24),
-                    const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 40),
-                      child: Text(
-                        'Timeless Elegance',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Color(0xFF666666),
-                          letterSpacing: 1.5,
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                    const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 40),
-                      child: Text(
-                        'Discover our premium collection of exquisite jewellery crafted for every moment',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: Color(0xFF999999),
-                          letterSpacing: 0.3,
-                          height: 1.6,
-                        ),
-                      ),
-                    ),
+                    // const Padding(
+                    //   padding: EdgeInsets.symmetric(horizontal: 40),
+                    //   child: Text(
+                    //     'Timeless Elegance',
+                    //     textAlign: TextAlign.center,
+                    //     style: TextStyle(
+                    //       fontSize: 16,
+                    //       color: Color(0xFF666666),
+                    //       letterSpacing: 1.5,
+                    //       fontWeight: FontWeight.w400,
+                    //     ),
+                    //   ),
+                    // ),
+                    // const SizedBox(height: 12),
+                    // const Padding(
+                    //   padding: EdgeInsets.symmetric(horizontal: 40),
+                    //   child: Text(
+                    //     'Discover our premium collection of exquisite jewellery crafted for every moment',
+                    //     textAlign: TextAlign.center,
+                    //     style: TextStyle(
+                    //       fontSize: 12,
+                    //       color: Color(0xFF999999),
+                    //       letterSpacing: 0.3,
+                    //       height: 1.6,
+                    //     ),
+                    //   ),
+                    // ),
                   ],
                 ),
               ),
@@ -283,6 +315,8 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
               ),
             ],
           ),
+            ),
+          ],
         ),
       ),
     );

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../models/cart_model.dart';
 import '../models/order_model.dart';
 import '../services/order_service.dart';
@@ -137,12 +138,12 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                   ),
                 ),
                 const SizedBox(height: 24),
-                const Text(
+                Text(
                   'Order Confirmed!',
-                  style: TextStyle(
+                  style: GoogleFonts.bodoniModa(
                     fontSize: 24,
                     fontWeight: FontWeight.w900,
-                    color: Color(0xFF1A1A1A),
+                    color: const Color(0xFF1A1A1A),
                     letterSpacing: 0.5,
                   ),
                 ),
