@@ -15,10 +15,12 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
   late AnimationController _fadeController;
   late Animation<double> _scaleAnimation;
   late Animation<double> _fadeAnimation;
+  bool _showSkeleton = true;
 
   @override
   void initState() {
     super.initState();
+    _showSkeleton = false;
     _setupAnimations();
     _navigateToNextScreen();
   }
@@ -51,23 +53,195 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
   }
 
   void _navigateToNextScreen() async {
-    await Future.delayed(const Duration(seconds: 4));
+    await Future.delayed(const Duration(seconds: 2));
 
     // Always go to main navigation screen
     // Users can browse home without login
     // Login is required only for specific actions
-    Get.offAll(() => const MainNavigationScreen());
+    if (mounted) {
+      Get.offAll(() => const MainNavigationScreen());
+    }
   }
 
   @override
   void dispose() {
-    _scaleController.dispose();
-    _fadeController.dispose();
+    if (!_showSkeleton) {
+      _scaleController.dispose();
+      _fadeController.dispose();
+    }
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    if (_showSkeleton) {
+      return _buildSkeletonScreen();
+    }
+    
+    return _buildSplashScreen();
+  }
+
+  Widget _buildSkeletonScreen() {
+    return Scaffold(
+      backgroundColor: const Color(0xFFF5F1E8),
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              const Color(0xFFF5F1E8),
+              const Color(0xFFFCF8F3),
+            ],
+          ),
+        ),
+        child: Stack(
+          // children: [
+          //   // Ring image background - right side with low opacity
+          //   Positioned(
+          //     right: 150,
+          //     top: 50,
+          //     bottom: 50,
+          //     child: Opacity(
+          //       opacity: 0.12,
+          //       child: Transform.scale(
+          //         scale: 0.8,
+          //         child: Image.asset(
+          //           'assets/images/ring.png',
+          //           fit: BoxFit.cover,
+          //           errorBuilder: (context, error, stackTrace) {
+          //             return Container(
+          //               color: const Color(0xFFD4AF37).withOpacity(0.1),
+          //               child: const Center(
+          //                 child: Icon(
+          //                   Icons.diamond,
+          //                   size: 100,
+          //                   color: Color(0xFFD4AF37),
+          //                 ),
+          //               ),
+          //             );
+          //           },
+          //         ),
+          //       ),
+          //     ),
+          //   ),
+          //   // Skeleton Content
+          //   // SafeArea(
+          //   //   child: Column(
+          //   //     mainAxisAlignment: MainAxisAlignment.center,
+          //   //     children: [
+          //   //       const SizedBox(height: 40),
+          //   //       // Skeleton icon circle
+          //   //       _buildSkeletonShimmer(
+          //   //         child: Container(
+          //   //           height: 160,
+          //   //           width: 160,
+          //   //           decoration: BoxDecoration(
+          //   //             shape: BoxShape.circle,
+          //   //             color: Colors.grey[300],
+          //   //           ),
+          //   //         ),
+          //   //       ),
+          //   //       const SizedBox(height: 50),
+          //   //       // Skeleton text lines
+          //   //       Column(
+          //   //         children: [
+          //   //           _buildSkeletonShimmer(
+          //   //             child: Container(
+          //   //               height: 60,
+          //   //               width: 150,
+          //   //               decoration: BoxDecoration(
+          //   //                 borderRadius: BorderRadius.circular(8),
+          //   //                 color: Colors.grey[300],
+          //   //               ),
+          //   //             ),
+          //   //           ),
+          //   //           const SizedBox(height: 16),
+          //   //           _buildSkeletonShimmer(
+          //   //             child: Container(
+          //   //               height: 12,
+          //   //               width: 100,
+          //   //               decoration: BoxDecoration(
+          //   //                 borderRadius: BorderRadius.circular(6),
+          //   //                 color: Colors.grey[300],
+          //   //               ),
+          //   //             ),
+          //   //           ),
+          //   //           const SizedBox(height: 24),
+          //   //           _buildSkeletonShimmer(
+          //   //             child: Container(
+          //   //               height: 12,
+          //   //               width: 120,
+          //   //               decoration: BoxDecoration(
+          //   //                 borderRadius: BorderRadius.circular(6),
+          //   //                 color: Colors.grey[300],
+          //   //               ),
+          //   //             ),
+          //   //           ),
+          //   //         ],
+          //   //       ),
+          //   //       const Spacer(),
+          //   //       // Skeleton loading animation
+          //   //       _buildSkeletonShimmer(
+          //   //         child: Row(
+          //   //           mainAxisAlignment: MainAxisAlignment.center,
+          //   //           children: List.generate(
+          //   //             3,
+          //   //             (index) => Padding(
+          //   //               padding: const EdgeInsets.symmetric(horizontal: 7),
+          //   //               child: Container(
+          //   //                 width: 8,
+          //   //                 height: 8,
+          //   //                 decoration: BoxDecoration(
+          //   //                   shape: BoxShape.circle,
+          //   //                   color: Colors.grey[300],
+          //   //                 ),
+          //   //               ),
+          //   //             ),
+          //   //           ),
+          //   //         ),
+          //   //       ),
+          //   //       const SizedBox(height: 20),
+          //   //       _buildSkeletonShimmer(
+          //   //         child: Container(
+          //   //           height: 12,
+          //   //           width: 60,
+          //   //           decoration: BoxDecoration(
+          //   //             borderRadius: BorderRadius.circular(6),
+          //   //             color: Colors.grey[300],
+          //   //           ),
+          //   //         ),
+          //   //       ),
+          //   //       const SizedBox(height: 60),
+          //   //     ],
+          //   //   ),
+          //   // ),
+          // ],
+        ),
+      ),
+    );
+  }
+
+  // Widget _buildSkeletonShimmer({required Widget child}) {
+  //   return ShaderMask(
+  //     shaderCallback: (bounds) {
+  //       return LinearGradient(
+  //         begin: Alignment.centerLeft,
+  //         end: Alignment.centerRight,
+  //         stops: const [0.0, 0.5, 1.0],
+  //         colors: [
+  //           Colors.grey[300]!,
+  //           Colors.grey[100]!,
+  //           Colors.grey[300]!,
+  //         ],
+  //         tileMode: TileMode.mirror,
+  //       ).createShader(bounds);
+  //     },
+  //     child: child,
+  //   );
+  // }
+
+  Widget _buildSplashScreen() {
     return Scaffold(
       backgroundColor: const Color(0xFFF5F1E8),
       body: Container(
@@ -85,15 +259,15 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
           children: [
             // Ring image background - right side with low opacity
             Positioned(
-              right: -40,
-              top: -30,
-              bottom: -30,
+              right: -160,
+              top: 80,
+              bottom: 20,
               child: Opacity(
-                opacity: 0.12,
+                opacity: 0.22,
                 child: Transform.scale(
-                  scale: 1.2,
+                  scale: 1.0,
                   child: Image.asset(
-                    '/ring.png',
+                    'assets/images/ring.png',
                     fit: BoxFit.cover,
                     errorBuilder: (context, error, stackTrace) {
                       return Container(
@@ -114,8 +288,8 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
             // Main content
             SafeArea(
               child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
               // Premium decorative line
               // Padding(
               //   padding: const EdgeInsets.symmetric(horizontal: 80),
